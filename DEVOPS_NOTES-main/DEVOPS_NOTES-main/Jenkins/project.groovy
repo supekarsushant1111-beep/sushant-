@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    stages {
+        stage('Pull') {
+            steps {
+                git 'https://github.com/rajatpzade/studentapp-pro.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh '/opt/maven/bin/mvn clean package'
+            }
+        }
+        // stage('Test') {
+        //     steps {
+        //         sh '/opt/maven/bin/mvn sonar:sonar   -Dsonar.projectKey=studentapp   -Dsonar.host.url=http://18.218.5.157:9000   -Dsonar.login=sqp_5ee3d60a4ef5e16f18c411af0de0f8e0c9199f6a'
+        //     }
+        // }
+        // stage('Test') {
+        //     steps {
+        //         withSonarQubeEnv(installationName: 'sonar', credentialsId: 'sonar-token') {
+        //             sh '/opt/maven/bin/mvn sonar:sonar -Dsonar.projectKey=studentapp'
+        //         }           
+        //     }
+        // }
+        // stage('QualityGate') {
+        //     steps {
+        //         timeout(10) {
+        //             waitForQualityGate abortPipeline: true, credentialsId: 'sonar-token'
+        //         }
+        //     }
+        // }
+        stage('Deploy') {
+            steps {
+                sh '''
+                    docker build . -t rajatpzade/eks:latest
+                    docker push  rajatpzade/eks:latest
+                    docker rmi rajatpzade/eks:latest
+                    kubectl apply -f ./yaml/
+                '''
+            }
+        }
+    }
+}
+
+
+
+
+
+
