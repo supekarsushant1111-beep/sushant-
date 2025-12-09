@@ -1,1 +1,0 @@
-[{"appName":"Battlegrounds India","appPackage":"com.pubg.imobile","appVersion":"4.0.0"}]
